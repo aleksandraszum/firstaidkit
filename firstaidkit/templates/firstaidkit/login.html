@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a href="{% url 'index' %}" class="btn btn-lg ">Strona główna</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <div class="row">
+            <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
+                <div class="col">
+                    <h1>Logowanie</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <p class="lead">{{ communicate }}</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <form method="post" action=".">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" class="btn btn-lg btn-secondary" value="Zaloguj się"/>
+                </form>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

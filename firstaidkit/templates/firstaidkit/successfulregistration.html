@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+            <main role="main" class="text-center">
+                <p>
+                <h1> E-apteczka: zarządzanie lekami online</h1></p>
+                <p class="lead">{{ comunicate }} {{ name }}!</p>
+
+                <p class="lead">Teraz możesz się zalogować:</p>
+                <p class="lead">
+                    <a href="{% url 'login' %}" class="btn btn-lg btn-secondary">zaloguj się</a>
+                </p>
+            </main>
+        </div>
+    </div>
+
+
+{% endblock %}

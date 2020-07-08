@@ -1,1 +1,3 @@
-/firstaidkit/templates/firstaidkit/use.html
+/firstaidkit/migrations/
+/venv/
+/db.sqlite3

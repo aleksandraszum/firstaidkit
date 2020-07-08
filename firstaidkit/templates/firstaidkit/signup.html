@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a href="{% url 'index' %}" class="btn btn-lg ">Strona główna</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="text-center">
+        <div class="row">
+            <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+                <div class="col">
+                    <h1>Rejestracja</h1>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <p>
+                            {{ field.label_tag }}<br>
+                            {{ field }}
+                        </p>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-lg btn-secondary">Zarejestruj się</button>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}

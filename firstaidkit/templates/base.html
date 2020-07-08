@@ -1,0 +1,23 @@
+{% load static %}
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>E-apteczka: zarządzanie lekami online</title>
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}" charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'style.css' %}" charset="UTF-8">
+    <script src="{% static 'bootstrap.min.js' %}"></script>
+
+</head>
+
+<body>
+
+
+<div class="content container border border-secondary">
+
+    {% block content %}
+    {% endblock %}
+</div>
+
+</body>
+</html>
