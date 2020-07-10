@@ -4,7 +4,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    url(r'^user/(\w+)/$', views.profile, name='profile'),
     path('', views.index, name='index'),
     url(r'^login/$', views.login_view, name='login'),
     url(r'^logout/$', views.logout_view, name='logout'),
@@ -12,5 +11,5 @@ urlpatterns = [
     url(r'^display/$', views.display, name='display'),
     url(r'^buy/$', views.buy, name='buy'),
     url(r'^use/$', views.use, name='use'),
-
+    url(r'^utylize/$', views.utylize, name='utylize'),
 ]

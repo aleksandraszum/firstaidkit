@@ -38,29 +38,15 @@
                     <a href="{% url 'utylize' %}" class="btn btn-lg ">Zutylizuj lek</a>
                 </p>
             </div>
-            <div class="col-9">
+            <div class="col-9 align-self-center">
                 <p class="lead text-center">
-                    Zakup lek:
+                    Nie masz przeterminowanych leków!
                 </p>
-
-                <div class="row text-center">
-                    <div class="col">
-                        <form method="post" action=".">
-                            {% csrf_token %}
-                            {% for field in form %}
-                                <p>
-                                    {{ field.label_tag }}<br>
-                                    {{ field }}
-                                </p>
-                            {% endfor %}
-                            <input type="submit" class="btn btn-lg btn-secondary" value="Kup"/>
-                        </form>
-                    </div>
-                </div>
 
             </div>
 
         </div>
     </div>
+
 
 {% endblock %}

@@ -9,9 +9,6 @@
                     <a href="{% url 'index' %}" class="btn btn-lg ">Strona główna</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'profile' user.username %}" class="btn btn-lg "> Profil </a>
-                </li>
-                <li class="nav-item">
                     <a href="{% url 'logout' %}" class="btn btn-lg ">Wyloguj się</a>
                 </li>
             </ul>
@@ -35,13 +32,39 @@
                     <a href="{% url 'buy' %}" class="btn btn-lg ">Dodaj lek</a>
                 </p>
                 <p class="lead">
-                    <a href="{% url 'login' %}" class="btn btn-lg ">Zażyj lek</a>
+                    <a href="{% url 'use' %}" class="btn btn-lg ">Zażyj lek</a>
                 </p>
                 <p class="lead">
-                    <a href="{% url 'login' %}" class="btn btn-lg ">Zutylizuj lek</a>
+                    <a href="{% url 'utylize' %}" class="btn btn-lg ">Zutylizuj lek</a>
                 </p>
             </div>
-            <div class="col-9">col-9</div>
+            <div class="col-9">
+
+                {% for management in managements %}
+
+                    {% if management.is_buyed %}
+                    <p class=" text-center">
+                        Dnia {{ management.date_of_used|date:"d-m-y" }} został zakupiony lek {{ management.medicament }}.
+                    </p>
+                    {% elif management.is_used %}
+                    <p class=" text-center">
+                        Dnia {{ management.date_of_used|date:"d-m-y" }} zażyto lek {{ management.medicament }} w
+                        ilości {{ management.number_of_tablets_or_ml }}.
+                    </p>
+
+                    {% elif management.is_used_absolute %}
+                    <p class=" text-center">
+                        Dnia {{ management.date_of_used|date:"d-m-y" }} skończył się lek {{ management.medicament }}.
+                    </p>
+
+                    {% else %}
+                    <p class=" text-center">
+                        Dnia {{ management.date_of_used|date:"d-m-y"}} zutylizowano lek {{ management.medicament }}.
+                    </p>
+                    {% endif %}
+
+                {% endfor %}
+            </div>
         </div>
     </div>
 

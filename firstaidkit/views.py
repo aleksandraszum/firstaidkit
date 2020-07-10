@@ -1,18 +1,23 @@
+import datetime
+import time
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import LoginForm, SignUpForm, BuyMedicamentForm
+from .forms import LoginForm, SignUpForm, BuyMedicamentForm, UseMedicamentForm, UtylizeMedicamentForm
 from django.contrib.auth import authenticate, login, logout
 from datetime import date
 
-from .models import Medicament
+from .models import Medicament, MedicineManagement
 
 
 def index(request):
     if request.user.is_authenticated:
-        return render(request, 'firstaidkit/indexpage.html')
+        management = MedicineManagement.objects.filter(firstaidkit=request.user.id).order_by('-pk')[:8]
+        print(management)
+        return render(request, 'firstaidkit/indexpage.html', {'managements': management})
     else:
         return render(request, 'firstaidkit/homepage.html')
 
@@ -25,7 +30,6 @@ def signup_view(request):
         username = form.cleaned_data.get('username')
         raw_password = form.cleaned_data.get('password1')
         user = authenticate(username=username, password=raw_password)
-        # login(request, user)
         comunicate = "Zarejestrowałeś się pomyślnie"
         return render(request, 'firstaidkit/successfulregistration.html', {'comunicate': comunicate, 'name': username})
     return render(request, 'firstaidkit/signup.html', {'form': form})
@@ -64,22 +68,17 @@ def logout_view(request):
     return render(request, 'firstaidkit/homepage.html', {'communicate': communicate})
 
 
-def profile(request, username):
-    if request.user.is_authenticated:
-        return render(request, 'firstaidkit/profile.html', {'username': username})
-    else:
-        return render(request, 'firstaidkit/homepage.html')
-
-
+# display the first aid kit
 def display(request):
     if request.user.is_authenticated:
         user_id = request.user.id
-        medicaments = Medicament.objects.filter(firstaidkit=user_id)
+        medicaments = Medicament.objects.filter(firstaidkit=user_id).order_by('expiration_date')
         return render(request, 'firstaidkit/display.html', {'medicaments': medicaments})
     else:
         return render(request, 'firstaidkit/homepage.html')
 
 
+# add new medicaments
 def buy(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -93,6 +92,9 @@ def buy(request):
                                         number_of_tablets_or_ml=number_of_tablets_or_ml,
                                         expiration_date=expiration_date)
                 medicament.save()
+                management = MedicineManagement(firstaidkit_id=firstaidkit_id, medicament=name,
+                                                number_of_tablets_or_ml=number_of_tablets_or_ml, is_buyed=True)
+                management.save()
             return render(request, 'firstaidkit/buysuccessful.html', {"name": name})
         form = BuyMedicamentForm()
         return render(request, 'firstaidkit/buy.html', {'form': form})
@@ -100,11 +102,72 @@ def buy(request):
         return render(request, 'firstaidkit/homepage.html')
 
 
+# take medicine
 def use(request):
     if request.user.is_authenticated:
-        user_id = request.user.id
-        #medicaments = Medicament.objects.filter(firstaidkit=user_id).filter(expiration_date > date.today())
+        if request.method == 'POST':
+            form = UseMedicamentForm(request.POST, user=request.user.id)
+            medicament_id = int(form['medicament_id'].value())
+            name = Medicament.objects.filter(pk=medicament_id).first()
+            medicament_amount = int(form['number_of_tablets_or_ml'].value())
+            medicament = Medicament.objects.get(pk=medicament_id)
 
-        return render(request, 'firstaidkit/use.html')
+            if medicament.number_of_tablets_or_ml >= medicament_amount:
+                medicament.number_of_tablets_or_ml = medicament.number_of_tablets_or_ml - medicament_amount
+                medicament.save()
+
+                management = MedicineManagement(firstaidkit=User(pk=request.user.id), medicament=name,
+                                                number_of_tablets_or_ml=medicament_amount, is_used=True)
+                management.save()
+
+                if medicament.number_of_tablets_or_ml == 0:
+                    management2 = MedicineManagement(firstaidkit_id=request.user.id, medicament=medicament,
+                                                    number_of_tablets_or_ml=medicament_amount,
+                                                    is_used_absolute=True)
+                    management2.save()
+                    medicament.delete()
+                    communicate = "Skończył się lek: "
+                    return render(request, 'firstaidkit/successfuluse.html',
+                                  {'medicament': name, 'amount': medicament_amount, 'communicate': communicate})
+
+                return render(request, 'firstaidkit/successfuluse.html',
+                              {'medicament': name, 'amount': medicament_amount})
+            else:
+                communicate = "Nie możesz zażyć więcej leków, niż masz w apteczce!"
+                form = UseMedicamentForm(request.POST, user=request.user.id)
+                return render(request, 'firstaidkit/use.html', {'form': form, 'communicate': communicate})
+
+        form = UseMedicamentForm(request.POST, user=request.user.id)
+        return render(request, 'firstaidkit/use.html', {'form': form})
+    else:
+        return render(request, 'firstaidkit/homepage.html')
+
+
+# utylize medicaments
+def utylize(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = UtylizeMedicamentForm(request.POST, user=request.user.id)
+            medicament_id = int(form['medicament_id'].value())
+            medicament = Medicament.objects.get(pk=medicament_id)
+            name = medicament.name
+            medicament_amount = medicament.number_of_tablets_or_ml
+            management = MedicineManagement(firstaidkit=User(pk=request.user.id),
+                                            medicament=name,
+                                            number_of_tablets_or_ml=medicament_amount, is_used=False,
+                                            is_utylized=True)
+            management.save()
+            medicament.delete()
+
+            return render(request, 'firstaidkit/successfulutylize.html',
+                          {'medicament': name})
+        medicament = (Medicament.objects.filter(firstaidkit=request.user.id).exclude(
+            expiration_date__gt=datetime.date.today()).values_list('number_of_tablets_or_ml'))
+        if medicament.exists():
+            form = UtylizeMedicamentForm(request.POST, user=request.user.id)
+            return render(request, 'firstaidkit/utylize.html', {'form': form})
+        else:
+            return render(request, 'firstaidkit/notutylize.html')
+
     else:
         return render(request, 'firstaidkit/homepage.html')

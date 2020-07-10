@@ -39,28 +39,35 @@
                 </p>
             </div>
             <div class="col-9">
-                <p class="lead text-center">
-                    Zakup lek:
+                <p class="lead text-center font-weight-bold">
+                    Zutylizuj lek
                 </p>
 
-                <div class="row text-center">
-                    <div class="col">
-                        <form method="post" action=".">
-                            {% csrf_token %}
-                            {% for field in form %}
-                                <p>
-                                    {{ field.label_tag }}<br>
-                                    {{ field }}
-                                </p>
-                            {% endfor %}
-                            <input type="submit" class="btn btn-lg btn-secondary" value="Kup"/>
-                        </form>
+                <div class="container">
+                    <div class="row ">
+                        <div class="col align-self-center">
+                            <p class=" text-center">
+                                Poniższe leki się przeterminowały:</p>
+                            <form method="post" action=".">
+                                {% csrf_token %}
+                                <p class=" text-center">
+                                    {{ form.medicament_id }}</p>
+                                <p class=" text-center">
+                                    {{ form.number_of_tablets_or_ml.label }}
+                                    {{ form.number_of_tablets_or_ml }} </p>
+                                <p class=" text-center">
+                                    <input type="submit" class="btn btn-lg btn-secondary" value="Zutylizuj"/></p>
+                            </form>
+                        </div>
+
                     </div>
                 </div>
+
 
             </div>
 
         </div>
     </div>
+
 
 {% endblock %}
