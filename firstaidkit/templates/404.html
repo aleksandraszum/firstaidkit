@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a href="{% url 'index' %}" class="btn btn-lg ">Strona główna</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'logout' %}" class="btn btn-lg ">Wyloguj się</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <main role="main" class="text-center">
+        <p>
+        <h1> E-apteczka: zarządzanie lekami online</h1></p>
+    </main>
+
+    <div class="container ">
+        <div class="row">
+            <div class="col-3 content border border-secondary">
+                <p class="lead text-center">
+                    Apteczka {{ user.username }}:
+                </p>
+                <p class="lead">
+                    <a href="{% url 'display' %}" class="btn btn-lg ">Wyświetl apteczkę</a>
+                </p>
+                <p class="lead">
+                    <a href="{% url 'buy' %}" class="btn btn-lg ">Dodaj lek</a>
+                </p>
+                <p class="lead">
+                    <a href="{% url 'use' %}" class="btn btn-lg ">Zażyj lek</a>
+                </p>
+                <p class="lead">
+                    <a href="{% url 'utylize' %}" class="btn btn-lg ">Zutylizuj lek</a>
+                </p>
+            </div>
+            <div class="col-9 align-self-center">
+                <p class="lead text-center">
+                    Nie znaleziono strony!
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock %}

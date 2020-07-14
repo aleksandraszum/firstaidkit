@@ -13,3 +13,4 @@ urlpatterns = [
     url(r'^use/$', views.use, name='use'),
     url(r'^utylize/$', views.utylize, name='utylize'),
 ]
+
