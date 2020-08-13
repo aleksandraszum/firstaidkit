@@ -12,7 +12,7 @@
 Aleksandra Szum
 
 ## General info
-DSP App is a web application for learning Digital Signal Processing. Language: Polish.
+First Aid Kit is a web application for drug management. Language: Polish.
 
 ## Technologies
 - Python 3.7
